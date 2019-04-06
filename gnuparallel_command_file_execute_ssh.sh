@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage () {
-  echo "Usage: $0 [ -l limit ] [ -vV ] commandlines"
+  echo "Usage: $0 [ -d delay ] [ -l limit ] [ -vV ] commandlines"
   exit 1
 }
 
@@ -20,6 +20,7 @@ fi
 #### Parameter parsing
 ####
 verbose=0
+TACC_GNUPARALLEL_DELAY=0.2
 while [ $# -gt 0 ] ; do
   if [ "$1" = "-h" ] ; then 
     usage ; exit 0 ;
@@ -31,6 +32,10 @@ while [ $# -gt 0 ] ; do
     shift
     if [ $# -lt 2 ] ; then usage ; fi
     TACC_GNUPARALLEL_LIMIT="$1" ; shift
+  elif [ "$1" = "-d" ] ; then
+    shift
+    if [ $# -lt 2 ] ; then usage ; fi
+    TACC_GNUPARALLEL_DELAY="$1" ; shift
   elif [ $# -eq 1 ] ; then
     COMMANDFILE=$1 ; shift
   fi
@@ -69,10 +74,15 @@ fi
 
 ##
 ## now do an ssh parallel run
+## since the module has been loaded, 
+## the gnuparallel_whatever scripts are in the path
 ##
 ncommands=`cat ${COMMANDFILE} | wc -l`
 COMMANDDIR=`pwd`
-parallel --sshloginfile ${NODEFILE} --sshdelay 0.2 --workdir ${COMMANDDIR} \
-    ${TACC_GNUPARALLEL_SRC}/scripts/gnuparallel_command_execute.sh \
-        "${ENVCOMMANDFILE}" \
+parallel \
+    --sshloginfile ${NODEFILE} \
+    --sshdelay ${TACC_GNUPARALLEL_DELAY} \
+    --workdir ${COMMANDDIR} \
+    ${TACC_GNUPARALLEL_DIR}/scripts/gnuparallel_command_execute.sh \
+         "${ENVCOMMANDFILE}" \
     ::: `seq 1 $ncommands`
