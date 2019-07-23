@@ -1,7 +1,7 @@
 These are shell scripts to offer a launcher interface to the GNU parallel utility.
 TACC clusters have their own installation of gnu parallel but these scripts do not depend on it.
 
-Documentation to the scripts are in the scripts themselves.
+Documentation to the scripts is in the scripts themselves.
 
 Contact:
 Victor Eijkhout

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage () {
-  echo "Usage: $0 [ -d delay ] [ -l limit ] [ -vV ] commandlines"
+  echo "Usage: $0 [ -d delay ] [ -l limit ] [ -vV ] commandsfile"
   exit 1
 }
 
@@ -46,7 +46,7 @@ fi
 
 ENVCOMMANDFILE=/tmp/"${COMMANDFILE}"
 cat "${COMMANDFILE}" \
-| sed -e "s?^?env `/opt/apps/launcher/launcher-3.2/pass_env` ?" \
+| sed -e "s?^?env `pass_env` ?" \
 > "${ENVCOMMANDFILE}"
 
 ####
