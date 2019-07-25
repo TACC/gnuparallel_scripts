@@ -44,7 +44,7 @@ if [ -z "${COMMANDFILE}" ] ; then
   usage ; exit 1
 fi
 
-ENVCOMMANDFILE=/tmp/"${COMMANDFILE}"
+ENVCOMMANDFILE="${COMMANDFILE}".${SLURM_JOBID}
 cat "${COMMANDFILE}" \
 | sed -e "s?^?env `pass_env` ?" \
 > "${ENVCOMMANDFILE}"
@@ -86,3 +86,5 @@ parallel \
     ${TACC_GNUPARALLEL_DIR}/scripts/gnuparallel_command_execute.sh \
          "${ENVCOMMANDFILE}" \
     ::: `seq 1 $ncommands`
+
+rm -f "${ENVCOMMANDFILE}"
